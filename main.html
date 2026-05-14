@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Amour - Joyeux Anniversaire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            line-height: 1.8;
+            color: #3d3d3d;
+            background: linear-gradient(135deg, #faf8f6 0%, #f5f0eb 100%);
+            min-height: 100vh;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 1rem;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(212, 115, 106, 0.3);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .audio-player:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(212, 115, 106, 0.4);
+        }
+
+        .audio-player.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8);
+        }
+
+        .audio-icon {
+            font-size: 1.8rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .audio-player.paused .audio-icon {
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        #backgroundAudio {
+            display: none;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #6b5b4f;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: #d4736a;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #d4736a;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(212, 115, 106, 0.08) 0%, rgba(169, 132, 121, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '✿';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            color: #d4736a;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '✿';
+            position: absolute;
+            bottom: 20px;
+            right: 10%;
+            font-size: 2rem;
+            color: #d4736a;
+            opacity: 0.2;
+            animation: float 4s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: #6b5b4f;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .hero .subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            color: #d4736a;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d4736a, transparent);
+            margin: 0 auto 2rem;
+        }
+
+        /* Letter Section */
+        .letter-section {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .letter-container {
+            background: white;
+            padding: 4rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(212, 115, 106, 0.1);
+            position: relative;
+        }
+
+        .letter-container::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            color: #d4736a;
+            opacity: 0.3;
+            line-height: 1;
+        }
+
+        .letter-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #6b5b4f;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .letter-content {
+            font-size: 1.1rem;
+            line-height: 2;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .letter-content p {
+            margin-bottom: 1.8rem;
+            text-align: justify;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 3rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #d4736a;
+            font-style: italic;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .gallery-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            color: #6b5b4f;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .gallery-divider {
+            width: 60px;
+            height: 2px;
+            background: #d4736a;
+            margin: 0 auto 3rem;
+        }
+
+        .gallery-intro {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            color: #888;
+            font-size: 1rem;
+            font-style: italic;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Gallery Items with Masonry Style */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: #f5f0eb;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            aspect-ratio: 4/5;
+        }
+
+        .gallery-item:nth-child(2) {
+            aspect-ratio: 3/4;
+            grid-column: span 1;
+        }
+
+        .gallery-item:nth-child(3) {
+            aspect-ratio: 4/5;
+        }
+
+        .gallery-item:nth-child(4) {
+            aspect-ratio: 3/4;
+        }
+
+        .gallery-item:nth-child(5) {
+            aspect-ratio: 4/5;
+        }
+
+        .gallery-item:nth-child(6) {
+            aspect-ratio: 3/4;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(212, 115, 106, 0.25);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.08) rotate(2deg);
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+            padding: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: flex-end;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .gallery-item:hover .gallery-item-overlay {
+            opacity: 1;
+        }
+
+        /* Placeholder Style */
+        .gallery-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #d4736a, #a98479);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .gallery-placeholder p {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .gallery-placeholder .emoji {
+            font-size: 3rem;
+        }
+
+        /* Video Section */
+        .video-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #faf8f6 0%, #f5f0eb 100%);
+        }
+
+        .video-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            color: #6b5b4f;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .video-divider {
+            width: 60px;
+            height: 2px;
+            background: #d4736a;
+            margin: 0 auto 3rem;
+        }
+
+        .video-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: #888;
+            font-size: 1rem;
+            font-style: italic;
+        }
+
+        .video-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #a98479, #d4736a);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: 15px;
+        }
+
+        .video-placeholder .emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .video-placeholder p {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 3rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border-left: 4px solid #d4736a;
+        }
+
+        .instructions h3 {
+            color: #6b5b4f;
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .instructions p {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box {
+            background: #faf8f6;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: #6b5b4f;
+        }
+
+        /* Footer */
+        footer {
+            background: #6b5b4f;
+            color: #f5f0eb;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .footer-decoration {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            letter-spacing: 8px;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .letter-container {
+                padding: 2rem;
+            }
+
+            .letter-container::before {
+                font-size: 3rem;
+                left: 20px;
+            }
+
+            .gallery-section h2,
+            .video-section h2,
+            .letter-title {
+                font-size: 1.8rem;
+            }
+
+            .gallery {
+                gap: 1.5rem;
+            }
+
+            .gallery-item {
+                aspect-ratio: 1 !important;
+            }
+
+            .audio-player {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                padding: 1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .hero {
+                padding: 3rem 1.5rem 2rem;
+                margin-top: 200px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .letter-container {
+                padding: 1.5rem;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .audio-player {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio Player Button -->
+    <div class="audio-player paused" id="audioPlayer" title="Cliquez pour écouter la musique">
+        <div class="audio-icon">🎵</div>
+    </div>
+
+    <!-- Hidden Audio Element -->
+    <audio id="backgroundAudio" loop>
+        <!-- INSTRUCTIONS: Remplacez l'URL ci-dessous par le lien de votre musique calme -->
+        <!-- Vous pouvez utiliser un lien direct d'une musique libre de droit -->
+        <!-- Exemples: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3 -->
+        <source src="mp.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#hero">Accueil</a></li>
+            <li><a href="#letter">Lettre d'amour</a></li>
+            <li><a href="#gallery">Galerie</a></li>
+            <li><a href="#video">Vidéo</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <h1>Joyeux Anniversaire</h1>
+        <div class="subtitle">À toi, ma fleur d'amour ✿</div>
+        <div class="divider"></div>
+        <p style="font-size: 1.1rem; color: #888; margin-top: 2rem;">
+            Une journée spéciale pour une personne extraordinaire
+        </p>
+    </section>
+
+    <!-- Letter Section -->
+    <section id="letter" class="letter-section fade-in">
+        <div class="letter-container">
+            <h2 class="letter-title">Une Lettre pour Toi</h2>
+            <div class="letter-content">
+                <p>
+                    Ma chère EYA ❤️,
+                </p>
+
+                <p>
+                    Aujourd'hui est un jour spécial, un jour pour célébrer ton arrivée dans ce monde, 
+                    mais aussi pour te rappeler combien tu es importante pour moi. À chaque aube, 
+                    je suis reconnaissant de pouvoir partager ma vie avec quelqu'un d'aussi extraordinaire.
+                </p>
+
+                <p>
+                    Je te regarde affronter tes examens et ta soutenance avec une détermination 
+                    qui m'inspire chaque jour. Tu es bien plus que capable – tu es exceptionnelle. 
+                    Cette force que tu montres, cette passion pour l'enseignement, cette volonté 
+                    d'excellir, c'est ce qui fait que je suis tombé amoureux de toi.
+                </p>
+
+                <p>
+                    Je sais que les examens et la soutenance sont un défi, mais je crois en toi. 
+                    Je crois en ta brillance, en ta capacité à inspirer les autres, en ta maturité 
+                    et en ton cœur pur. Tu ne te rends pas compte du potentiel que tu as, 
+                    de l'impact que tu auras sur les vies de tes futurs étudiants.
+                </p>
+
+                <p>
+                    Tu es une enseignante née. Tu as cette rareté de combiner la connaissance 
+                    avec l'empathie, la rigueur avec la bienveillance. Tes étudiants seront chanceux 
+                    d'avoir quelqu'un qui croit vraiment en eux, qui les inspire à devenir mieux.
+                </p>
+
+                <p>
+                    Pendant les moments difficiles, je serai là. Pour te soutenir, te motiver, 
+                    te rappeler que tu es capable de tout ce que tu entreprends. Ensemble, 
+                    il n'y a rien que nous ne puissions affronter.
+                </p>
+
+                <p>
+                    Alors, en ce jour de ton anniversaire, je veux que tu saches que je t'aime 
+                    non seulement pour ce que tu fais, mais pour qui tu es. Tu es mon inspiration, 
+                    mon soutien, mon bonheur.
+                </p>
+
+                <p>
+                    Joyeux anniversaire à la femme la plus merveilleuse que je connaisse.
+                    Que cette journée soit aussi belle et radieuse que toi.
+                </p>
+
+                <div class="signature">
+                    Pour toujours, Ton Amour ❤️
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery-section fade-in">
+        <h2>Nos Souvenirs</h2>
+        <div class="gallery-divider"></div>
+        <p class="gallery-intro">
+            Une collection de nos plus beaux moments ensemble...
+        </p>
+
+        <div class="gallery">
+            <!-- PHOTO 1: Remplacez l'URL par le lien de votre photo -->
+            <div class="gallery-item">
+                <img src="1.jpeg" alt="Photo 1 - Nous">
+                <div class="gallery-item-overlay">Photo souvenir</div>
+            </div>
+
+            <!-- PHOTO 2: Remplacez l'URL par le lien de votre photo -->
+            <div class="gallery-item">
+                <img src="2.jpeg" alt="Photo 2 - Nous">
+                <div class="gallery-item-overlay">Un moment spécial</div>
+            </div>
+
+            <!-- PHOTO 3: Remplacez l'URL par le lien de votre photo -->
+            <div class="gallery-item">
+                <img src="3.jpeg" alt="Photo 3 - Nous">
+                <div class="gallery-item-overlay">Sourires partagés</div>
+            </div>
+
+            <!-- PHOTO 4: Remplacez l'URL par le lien de votre photo -->
+            <div class="gallery-item">
+                <img src="4.jpeg" alt="Photo 4 - Nous">
+                <div class="gallery-item-overlay">Notre histoire</div>
+            </div>
+
+            <!-- PHOTO 5: Remplacez l'URL par le lien de votre photo -->
+            <div class="gallery-item">
+                <img src="5.jpeg" alt="Photo 5 - Nous">
+                <div class="gallery-item-overlay">Moments précieux</div>
+            </div>
+
+            <!-- PHOTO 6: Remplacez l'URL par le lien de votre photo -->
+            <div class="gallery-item">
+                <img src="6.jpeg" alt="Photo 6 - Nous">
+                <div class="gallery-item-overlay">Ensemble toujours</div>
+            </div>
+        </div>
+
+      
+    </section>
+
+    <!-- Video Section -->
+    <section id="video" class="video-section fade-in">
+        <h2>Un Message Vidéo</h2>
+        <div class="video-divider"></div>
+        <p class="video-intro">
+            Des mots qui viennent du cœur, dans un message vidéo personnel...
+        </p>
+
+        <!-- VIDÉO PRINCIPALE: Remplacez l'ID YouTube ci-dessous -->
+        <div class="video-container">
+            <video controls width="100%">
+                <source src="vd.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture vidéo.
+            </video>
+        </div>
+        
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Créé avec ❤️ pour toi</p>
+        <div class="footer-decoration">✿ ✿ ✿</div>
+        <p style="font-size: 0.95rem;">Un site d'amour et d'encouragement</p>
+    </footer>
+
+    <script>
+        const audio = document.getElementById('backgroundAudio');
+        const audioPlayer = document.getElementById('audioPlayer');
+        let isLetterSectionActive = false;
+        
+        // Detect current section while scrolling
+        function updateAudioState() {
+            const letterSection = document.getElementById('letter');
+            const letterRect = letterSection.getBoundingClientRect();
+            
+            // Check if letter section is in view (with some tolerance)
+            const inLetterSection = letterRect.top < window.innerHeight * 0.5 && 
+                                    letterRect.bottom > window.innerHeight * 0.5;
+            
+            if (inLetterSection && !isLetterSectionActive) {
+                isLetterSectionActive = true;
+                audioPlayer.classList.remove('hidden');
+            } else if (!inLetterSection && isLetterSectionActive) {
+                isLetterSectionActive = false;
+                if (!audio.paused) {
+                    audio.pause();
+                    audioPlayer.classList.add('paused');
+                }
+                audioPlayer.classList.add('hidden');
+            }
+        }
+
+        // Audio player button click - Manual play/pause
+        audioPlayer.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                audioPlayer.classList.remove('paused');
+            } else {
+                audio.pause();
+                audioPlayer.classList.add('paused');
+            }
+        });
+
+        // Update audio state on scroll
+        window.addEventListener('scroll', updateAudioState);
+
+        // Update audio state on navigation click
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(updateAudioState, 500);
+            });
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.2s';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Initialize - Hide audio player at start
+        audioPlayer.classList.add('hidden');
+        audioPlayer.classList.add('paused');
+    </script>
+</body>
+</html>
